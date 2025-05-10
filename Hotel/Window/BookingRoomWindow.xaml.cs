@@ -238,7 +238,6 @@ JOIN hotel.information_room ir ON r.id_information = ir.id";
             {
                 var selectedRow = (DataRowView)RoomsDataGrid.SelectedItem;
 
-                // Проверяем наличие столбцов
                 if (!selectedRow.Row.Table.Columns.Contains("room_id") ||
                     !selectedRow.Row.Table.Columns.Contains("room_number"))
                 {
@@ -246,7 +245,6 @@ JOIN hotel.information_room ir ON r.id_information = ir.id";
                     return;
                 }
 
-                // Безопасное преобразование
                 if (!long.TryParse(selectedRow["room_id"].ToString(), out long roomId) ||
                     !int.TryParse(selectedRow["room_number"].ToString(), out int roomNumber))
                 {
@@ -254,7 +252,7 @@ JOIN hotel.information_room ir ON r.id_information = ir.id";
                     return;
                 }
 
-                var ratingWindow = new RatingWindow(_currentUserId, roomId); // Передаем long
+                var ratingWindow = new RatingWindow(_currentUserId, roomId); 
                 if (ratingWindow.ShowDialog() == true)
                 {
                     await LoadRoomsDataAsync();
