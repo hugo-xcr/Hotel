@@ -1,0 +1,398 @@
+﻿<Window x:Class="Hotel.Window.AddRoomWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Hotel.Window"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        Title="Добавить номер" Height="446" Width="1000"
+        WindowStyle="None" ResizeMode="NoResize"
+        Closing="Window_Closing">
+
+    <Window.Resources>
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF2D6F9D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border CornerRadius="10" 
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF2D6F9D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton"
+                                Grid.Column="2"
+                                IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                                Focusable="false">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="#FF2D6F9D" CornerRadius="0,5,5,0">
+                                            <Path Fill="White" Data="M 0 0 L 4 4 L 8 0 Z"
+                                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    Margin="3,3,23,3"
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Left"/>
+                            <Popup x:Name="Popup"
+                          Placement="Bottom"
+                          IsOpen="{TemplateBinding IsDropDownOpen}"
+                          AllowsTransparency="True"
+                          Focusable="False"
+                          PopupAnimation="Slide">
+                                <Border CornerRadius="5"
+                              BorderThickness="1"
+                              BorderBrush="#FF2D6F9D"
+                              Background="White">
+                                    <ScrollViewer>
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="EditButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF2D6F9D"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3D8DBF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="RoundedListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#FF2D6F9D"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border CornerRadius="10" 
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer>
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="ListBoxItem">
+                                    <Border CornerRadius="5" Background="Transparent">
+                                        <ContentPresenter/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Background="#FF2D6F9D">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Верхняя панель с кнопками -->
+        <Grid Grid.Row="0" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Кнопки управления окном -->
+            <StackPanel Grid.Column="0" Orientation="Vertical" Margin="10,0,0,0">
+                <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\cancel_25px.png"
+                       Width="30" Height="30" Stretch="Uniform"
+                       MouseDown="CloseWindow_MouseDown" Cursor="Hand"/>
+                <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\minimize_window_25pxdf.png" 
+                       Width="30" Height="30" Stretch="Uniform" Margin="0,10,0,0"
+                       MouseDown="MinimizeWindow_MouseDown" Cursor="Hand"/>
+            </StackPanel>
+
+            <!-- Основные кнопки навигации -->
+            <UniformGrid Grid.Column="1" Rows="1" Columns="5" Margin="20,0,20,0">
+                <!-- Профиль -->
+                <Border x:Name="ProfileBorder" Background="Transparent" CornerRadius="15" 
+                        Height="50" Margin="5" MouseDown="ProfileButton_MouseDown" Cursor="Hand">
+                    <Grid>
+                        <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\user_25px.png" 
+                               Width="30" Height="30" Stretch="Uniform"
+                               VerticalAlignment="Center" HorizontalAlignment="Left" Margin="5,0,0,0"/>
+                        <TextBlock Text="Профиль" VerticalAlignment="Center" Foreground="White" 
+                                   FontWeight="Bold" HorizontalAlignment="Center" Margin="40,0,0,0"/>
+                    </Grid>
+                </Border>
+
+                <!-- Добавить номер -->
+                <Border x:Name="AddRoomBorder" Background="White" CornerRadius="15" Height="50" Margin="5">
+                    <Grid>
+                        <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\add room.png" 
+                               Width="30" Height="30" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        <TextBlock Text="Добавить номер" VerticalAlignment="Center" 
+                                  Foreground="Black" HorizontalAlignment="Left" Margin="40,0,0,0" TextWrapping="Wrap" Width="78"/>
+                    </Grid>
+                </Border>
+
+                <!-- Бронирование номера -->
+                <Border x:Name="BookRoomBorder" Background="Transparent" CornerRadius="15" Height="50" Margin="5"
+                        MouseDown="BookRoom_Click" Cursor="Hand">
+                    <Grid>
+                        <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\customer registration.png" 
+                               Width="30" Height="30" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        <TextBlock Text="Бронирование номера" VerticalAlignment="Center" 
+                                  Foreground="White" HorizontalAlignment="Left" Margin="40,0,0,0" TextWrapping="Wrap" Width="91"/>
+                    </Grid>
+                </Border>
+
+                <!-- Проверка бронирования -->
+                <Border x:Name="CheckBookingBorder" Background="Transparent" CornerRadius="15" Height="50" Margin="5"
+                        MouseDown="CheckBooking_Click" Cursor="Hand">
+                    <Grid>
+                        <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\Check out_50px.png" 
+                               Width="30" Height="30" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        <TextBlock Text="Проверка бронирования" VerticalAlignment="Center" 
+                                  Foreground="White" HorizontalAlignment="Left" Margin="40,0,0,0" TextWrapping="Wrap" Width="110"/>
+                    </Grid>
+                </Border>
+
+                <!-- Список сотрудников -->
+                <Border x:Name="ViewEmployeesBorder" Background="Transparent" CornerRadius="15" Height="50" Margin="5"
+                        MouseDown="ViewEmployees_Click" Cursor="Hand">
+                    <Grid>
+                        <Image Source="C:\Users\hugo\Desktop\Курсовой 2025\hotel\Hotel Management Icons\employee_50px.png" 
+                               Width="30" Height="30" Stretch="Uniform"
+                               HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"/>
+                        <TextBlock VerticalAlignment="Center" 
+                                  Foreground="White" HorizontalAlignment="Left" Margin="40,0,0,0" TextWrapping="Wrap" Width="110"><Run Text="Список сотрудников "/><Run Text="и постояльцев"/></TextBlock>
+                    </Grid>
+                </Border>
+            </UniformGrid>
+        </Grid>
+
+        <!-- Основное содержимое -->
+        <Border Grid.Row="1" Background="White" CornerRadius="15" Margin="10,10,10,10">
+            <Grid>
+                <TextBox x:Name="txtServices" Style="{StaticResource RoundedTextBoxStyle}" 
+                         Width="151" Margin="628,137,0,0" VerticalAlignment="Top" 
+                         HorizontalAlignment="Left" Height="30"
+                         ToolTip="Введите ID сервисов через запятую (например: 1, 2, 3)"/>
+
+                <Button x:Name="btnShowServices" Content="Показать сервисы" 
+                        Click="btnShowServices_Click"
+                        Style="{StaticResource EditButtonStyle}"
+                        Margin="644,170,0,0" VerticalAlignment="Top" 
+                        HorizontalAlignment="Left" Width="120"/>
+
+                <TextBlock Text="Номер комнаты:" FontWeight="Bold" Margin="472,54,0,0" 
+                          VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16"/>
+
+                <TextBox x:Name="txtRoomNumber" Style="{StaticResource RoundedTextBoxStyle}" 
+                         IsEnabled="False" Opacity="0.5" 
+                        Width="153" Margin="461,80,0,0" VerticalAlignment="Top" 
+                        HorizontalAlignment="Left" PreviewTextInput="NumberValidation"/>
+
+                <TextBox x:Name="txtPrice" Style="{StaticResource RoundedTextBoxStyle}" 
+                        Width="153" Margin="461,207,0,0" VerticalAlignment="Top" 
+                        HorizontalAlignment="Left" PreviewTextInput="DecimalValidation"/>
+
+                <Button x:Name="btnSave" Content="Сохранить номер" 
+                        Style="{StaticResource EditButtonStyle}"
+                        HorizontalAlignment="Right" VerticalAlignment="Bottom" 
+                        Margin="0,0,53,10" Width="205" Height="36" FontSize="18"
+                        Click="btnSave_Click"/>
+
+                <TextBlock FontWeight="Bold" Margin="511,116,0,0" 
+                          VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16">
+                    <Run Language="ru-ru" Text="Статус"/><Run Text=":"/>
+                </TextBlock>
+
+                <ComboBox x:Name="cmbStatus" Style="{StaticResource RoundedComboBoxStyle}" 
+                          Width="153" Margin="461,141,0,0" VerticalAlignment="Top" 
+                          HorizontalAlignment="Left" Height="26"/>
+
+                <TextBlock FontWeight="Bold" Margin="461,186,0,0" 
+                          VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16" Width="162">
+                    <Run Text="Стоимость за ноч"/><Run Language="ru-ru" Text="ь"/><Run Text=":"/>
+                </TextBlock>
+
+                <TextBox x:Name="txtRoomName" Style="{StaticResource RoundedTextBoxStyle}" 
+                        Width="153" Margin="626,80,0,0" VerticalAlignment="Top" 
+                        HorizontalAlignment="Left"/>
+
+                <TextBlock FontWeight="Bold" Margin="664,116,0,0" 
+                          VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16">
+                    <Run Language="ru-ru" Text="Сервисы"/><Run Text=":"/>
+                </TextBlock>
+
+                <TextBox x:Name="txtRoomTypeAndCapacity" Style="{StaticResource RoundedTextBoxStyle}" 
+                         Margin="790,80,39,0" VerticalAlignment="Top" Height="31"
+                         ToolTip="Введите в формате: Тип (X мест), например: Deluxe (2 места)"/>
+
+                <TextBlock FontWeight="Bold" Margin="790,25,0,0" VerticalAlignment="Top" 
+                          HorizontalAlignment="Left" FontSize="16" Height="55" Width="139" TextAlignment="Center">
+                    <Run Text="Тип комнаты "/><LineBreak/><Run Text="и к-во мест"/><Run Text=":"/>
+                </TextBlock>
+
+                <TextBlock FontWeight="Bold" Margin="461,10,0,0" 
+                          VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16">
+                    <Run Text="Добав"/><Run Language="ru-ru" Text="и"/><Run Text="ть новую конату"/>
+                </TextBlock>
+
+                <TextBlock FontWeight="Bold" Margin="619,59,0,0" 
+                          VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="16" Width="162">
+                    <Run Language="ru-ru" Text="Название номера"/><Run Text=":"/>
+                </TextBlock>
+
+                <!-- DataGrid с номерами -->
+                <Border Background="White" CornerRadius="15" 
+                        Margin="0,1,519,0" VerticalAlignment="Top" RenderTransformOrigin="0.182,2.1" Height="39">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="1*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Margin="20">
+                        </StackPanel>
+
+                        <Border Margin="2,43,3,-290" Grid.ColumnSpan="3">
+                            <DataGrid x:Name="RoomsDataGrid" 
+                                      AutoGenerateColumns="False"
+                                      HeadersVisibility="Column"
+                                      FontSize="10" 
+                                      Background="White"
+                                      BorderBrush="#FF2D6F9D"
+                                      BorderThickness="1"
+                                      RowBackground="White"
+                                      GridLinesVisibility="None"
+                                      VerticalContentAlignment="Center"
+                                      HorizontalContentAlignment="Center"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Auto" 
+                                      Margin="0,0,0,1" 
+                                      SelectionChanged="RoomsDataGrid_SelectionChanged">
+                                <DataGrid.Resources>
+                                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                                        <Setter Property="Background" Value="#FF2D6F9D"/>
+                                        <Setter Property="Foreground" Value="White"/>
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Setter Property="FontSize" Value="12"/>
+                                        <Setter Property="Padding" Value="8"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                    </Style>
+
+                                    <Style TargetType="{x:Type DataGridCell}">
+                                        <Setter Property="Padding" Value="8"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                                    <Border CornerRadius="5" 
+                                                            Background="{TemplateBinding Background}"
+                                                            BorderBrush="#DDDDDD"
+                                                            BorderThickness="0 0 0 1">
+                                                        <ContentPresenter VerticalAlignment="Center"
+                                                                          HorizontalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </DataGrid.Resources>
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="№ Комнаты" Binding="{Binding room_number}" Width="100"/>
+                                    <DataGridTextColumn Header="Название" Binding="{Binding room_name}" Width="150"/>
+                                    <DataGridTextColumn Header="Статус" Binding="{Binding status}" Width="100"/>
+                                    <DataGridTextColumn Header="Стоимость" Binding="{Binding price_per_night, StringFormat=C}" Width="100"/>
+                                    <DataGridTextColumn Header="Тип" Binding="{Binding room_type}" Width="120"/>
+                                    <DataGridTextColumn Header="Мест" Binding="{Binding capacity}" Width="80"/>
+                                    <DataGridTextColumn Header="Рейтинг" Binding="{Binding rating}" Width="80"/>
+                                    <DataGridTextColumn Header="Сервисы" Binding="{Binding services}" Width="200"/>
+                                </DataGrid.Columns>
+
+                                <DataGrid.RowStyle>
+                                    <Style TargetType="DataGridRow">
+                                        <Setter Property="Margin" Value="0 2"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                                                <Setter Property="Background" Value="#F5F9FC"/>
+                                            </Trigger>
+                                            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                                                <Setter Property="Background" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </DataGrid.RowStyle>
+                            </DataGrid>
+                        </Border>
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
